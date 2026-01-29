@@ -43,3 +43,20 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# 🔴 SECURITY FILES (ADD THESE)
+**/*.keystore
+**/*.jks
+**/key.properties
+**/google-services.json
+**/GoogleService-Info.plist
+*.env
+.env.*
+secrets/
+
+# 🗑️ UNNECESSARY FILES
+android/build/
+ios/Pods/
+.pub-cache/
+.flutter-plugins
