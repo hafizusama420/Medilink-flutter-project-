@@ -1,0 +1,43 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "medilink6928",
+          "appId": "1:322192606014:android:981f2239224a4fdac8226f",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "medilink6928",
+          "configurations": {
+            "android": "1:322192606014:android:981f2239224a4fdac8226f",
+            "ios": "1:322192606014:ios:14d8f4909dcf4862c8226f",
+            "macos": "1:322192606014:ios:14d8f4909dcf4862c8226f",
+            "web": "1:322192606014:web:aa0d5917eef97233c8226f",
+            "windows": "1:322192606014:web:242c184068ff35d6c8226f"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}
