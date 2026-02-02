@@ -30,6 +30,13 @@ class AppRoutes {
   static const addReview = '/add-review';
   static const reviewsList = '/reviews-list';
   
-  // Lab Tests route
-  static const labTests = '/lab-tests';
+  // Prescription routes
+  static const prescriptions = '/prescriptions';
+  static const createPrescription = '/create-prescription';
+  static const prescriptionDetails = '/prescription-details';
+  
+  // Assignment routes
+  static const assignments = '/assignments';
+  static const assignmentDetail = '/assignment-detail';
+  static const createAssignment = '/create-assignment';
 }

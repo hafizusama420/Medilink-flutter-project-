@@ -478,13 +478,6 @@ class HomeViewModel extends GetxController {
 
   void changeTab(int index) {
     selectedTabIndex.value = index;
-    
-    // For patients, index 1 still goes to Lab Tests which is a separate page
-    if (!isDoctor && index == 1) {
-       Get.toNamed(AppRoutes.labTests);
-       // Reset tab index on return or if it's just a jump
-       selectedTabIndex.value = 0;
-    }
   }
 
   String get userRole => currentUser.value?.role ?? 'Patient';

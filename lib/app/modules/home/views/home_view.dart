@@ -57,8 +57,6 @@ class HomeView extends GetView<HomeViewModel> {
           _buildDoctorsSection(context),
           const SizedBox(height: 24),
           _buildQuickActionsSection(context),
-          const SizedBox(height: 32),
-          _buildPartnersLabsSection(context),
           const SizedBox(height: 100),
         ],
       ),
@@ -289,16 +287,13 @@ class HomeView extends GetView<HomeViewModel> {
 
   /// 3. Quick Actions Section
   Widget _buildQuickActionsSection(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
+      child: Column(
         children: [
-          _buildActionTile(context, icon: Icons.description_outlined, label: 'E-prescription', onTap: () {}),
-          const SizedBox(width: 16),
-          _buildActionTile(context, icon: Icons.assignment_outlined, label: 'Medical Records', onTap: () {}),
-          const SizedBox(width: 16),
-          _buildActionTile(context, icon: Icons.how_to_reg_outlined, label: 'Assignments', onTap: () {}),
+          _buildActionTile(context, icon: Icons.description_outlined, label: 'E-prescription', onTap: () => Get.toNamed('/prescriptions')),
+          const SizedBox(height: 12),
+          _buildActionTile(context, icon: Icons.how_to_reg_outlined, label: 'Assignments', onTap: () => Get.toNamed('/assignments')),
         ],
       ),
     );
@@ -307,163 +302,54 @@ class HomeView extends GetView<HomeViewModel> {
   Widget _buildActionTile(BuildContext context, {required IconData icon, required String label, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF9FBFF),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE8F1FF), width: 1),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE8F1FF), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
-            child: Icon(icon, color: AppTheme.primaryBlue, size: 32),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            label,
-            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: AppTheme.textDark),
-          ),
-        ],
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FBFF),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE8F1FF), width: 1),
+              ),
+              child: Icon(icon, color: AppTheme.primaryBlue, size: 28),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              label,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: AppTheme.textDark,
+              ),
+            ),
+            const Spacer(),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: AppTheme.textLight,
+              size: 16,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   /// 4. Partners Labs Section
-  Widget _buildPartnersLabsSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            'Discount with partners labs',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 160,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            scrollDirection: Axis.horizontal,
-            itemCount: controller.partnerLabs.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 16),
-            itemBuilder: (context, index) {
-              final lab = controller.partnerLabs[index];
-              return _buildLabBanner(context, lab);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLabBanner(BuildContext context, Map<String, String> lab) {
-    return Stack(
-      children: [
-        Container(
-          width: 320,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppTheme.primaryGreen.withValues(alpha: 0.8),
-                AppTheme.deepGreen,
-              ],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.primaryGreen.withValues(alpha: 0.2),
-                blurRadius: 15,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Stack(
-            children: [
-              // Abstract Background Icon for texture
-              Positioned(
-                right: -30,
-                bottom: -30,
-                child: Icon(
-                  Icons.biotech_rounded,
-                  size: 180,
-                  color: Colors.white.withValues(alpha: 0.08),
-                ),
-              ),
-              // Main Visual Icon in center
-              Center(
-                child: Icon(
-                  Icons.science_rounded,
-                  color: Colors.white.withValues(alpha: 0.7),
-                  size: 60,
-                ),
-              ),
-              // Content Overlay for text readability
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.5),
-                    ],
-                  ),
-                ),
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      lab['name']!,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        // Discount Badge
-        Positioned(
-          top: 15,
-          right: 15,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-            child: Text(
-              lab['discount']!,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
-                color: Color(0xFF1F2937),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   /// Helper: Section Header
   Widget _buildSectionHeader(BuildContext context, {required String title, required VoidCallback onViewAll}) {
     return Row(
@@ -509,9 +395,7 @@ class HomeView extends GetView<HomeViewModel> {
           children: [
             _buildNavItem(Icons.grid_view_rounded, isDoctor ? 'Home' : 'For You', selected == 0, () => controller.changeTab(0)),
             if (!isDoctor) ...[
-              _buildNavItem(Icons.biotech_rounded, 'Labs', selected == 1, () => controller.changeTab(1)),
               _buildNavItem(Icons.favorite_rounded, 'Health', selected == 2, () => controller.changeTab(2)),
-              _buildNavItem(Icons.support_agent_rounded, 'Support', selected == 3, () => controller.changeTab(3)),
             ] else ...[
               _buildNavItem(Icons.chat_bubble_rounded, 'Messages', selected == 1, () => controller.changeTab(1)),
               _buildNavItem(Icons.calendar_today_rounded, 'Schedule', selected == 2, () => controller.changeTab(2)),
@@ -989,13 +873,26 @@ class HomeView extends GetView<HomeViewModel> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textDark),
           ),
           const SizedBox(height: 16),
-          Row(
+          // 2x2 Grid Layout
+          Column(
             children: [
-              _buildDoctorActionTile(Icons.calendar_month_outlined, "Calendar View", () => controller.navigateToCalendar()),
-              const SizedBox(width: 12),
-              _buildDoctorActionTile(Icons.add_task_rounded, "Add Slot", () => controller.showAddSlotDialog()),
-              const SizedBox(width: 12),
-              _buildDoctorActionTile(Icons.block, "Block Slot", () => controller.showBlockSlotDialog()),
+              // First Row
+              Row(
+                children: [
+                  _buildDoctorActionTile(Icons.calendar_month_outlined, "Calendar", () => controller.navigateToCalendar()),
+                  const SizedBox(width: 12),
+                  _buildDoctorActionTile(Icons.description_outlined, "Prescriptions", () => Get.toNamed('/prescriptions')),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // Second Row
+              Row(
+                children: [
+                  _buildDoctorActionTile(Icons.add_task_rounded, "Add Slot", () => controller.showAddSlotDialog()),
+                  const SizedBox(width: 12),
+                  _buildDoctorActionTile(Icons.block, "Block Slot", () => controller.showBlockSlotDialog()),
+                ],
+              ),
             ],
           ),
         ],
@@ -1008,16 +905,17 @@ class HomeView extends GetView<HomeViewModel> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4))],
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))],
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: AppTheme.primaryGreen, size: 24),
-              const SizedBox(height: 8),
+              Icon(icon, color: AppTheme.primaryGreen, size: 28),
+              const SizedBox(height: 10),
               Text(
                 label,
                 textAlign: TextAlign.center,

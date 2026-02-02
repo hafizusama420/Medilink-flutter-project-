@@ -24,8 +24,13 @@ import '../modules/doctors/bindings/doctor_binding.dart';
 import '../modules/reviews/views/add_review_view.dart';
 import '../modules/reviews/views/reviews_list_view.dart';
 import '../modules/reviews/bindings/review_binding.dart';
-import '../modules/lab_tests/views/lab_tests_view.dart';
-import '../modules/lab_tests/bindings/lab_tests_binding.dart';
+import '../modules/prescription/views/prescription_list_view.dart';
+import '../modules/prescription/views/create_prescription_view.dart';
+import '../modules/prescription/views/prescription_detail_view.dart';
+import '../modules/prescription/bindings/prescription_binding.dart';
+import '../modules/assignments/views/assignment_list_view.dart';
+import '../modules/assignments/views/assignment_detail_view.dart';
+import '../modules/assignments/bindings/assignment_binding.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -100,11 +105,33 @@ class AppPages {
       binding: ReviewBinding(),
     ),
     
-    // Lab Tests routes
+    // Prescription routes
     GetPage(
-      name: AppRoutes.labTests,
-      page: () => const LabTestsView(),
-      binding: LabTestsBinding(),
+      name: AppRoutes.prescriptions,
+      page: () => const PrescriptionListView(),
+      binding: PrescriptionBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.createPrescription,
+      page: () => const CreatePrescriptionView(),
+      binding: PrescriptionBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.prescriptionDetails,
+      page: () => const PrescriptionDetailView(),
+      binding: PrescriptionBinding(),
+    ),
+    
+    // Assignment routes
+    GetPage(
+      name: AppRoutes.assignments,
+      page: () => const AssignmentListView(),
+      binding: AssignmentBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.assignmentDetail,
+      page: () => const AssignmentDetailView(),
+      binding: AssignmentBinding(),
     ),
   ];
 }

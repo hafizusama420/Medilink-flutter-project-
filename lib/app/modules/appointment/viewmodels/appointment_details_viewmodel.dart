@@ -7,15 +7,19 @@ import '../../../data/services/user_service.dart';
 import '../../../data/services/review_service.dart';
 import '../../../data/services/notification_service.dart';
 import '../../../data/services/call_service.dart';
+import '../../../services/prescription_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../models/appointment_model.dart';
+import '../../../models/prescription_model.dart';
 
 class AppointmentDetailsViewModel extends GetxController {
   final AppointmentService _appointmentService = AppointmentService();
   final UserService _userService = UserService();
   final ReviewService _reviewService = ReviewService();
+  final PrescriptionService _prescriptionService = PrescriptionService();
 
   var appointment = Rx<AppointmentModel?>(null);
+  var existingPrescription = Rx<PrescriptionModel?>(null);
   var isLoading = false.obs;
   var isDeleting = false.obs;
   var errorMessage = ''.obs;
@@ -33,6 +37,7 @@ class AppointmentDetailsViewModel extends GetxController {
     appointmentId = args?['id'];
     if (appointmentId != null) {
       loadAppointment();
+      _loadPrescription();
     }
     _checkUserRole();
   }
@@ -319,6 +324,48 @@ class AppointmentDetailsViewModel extends GetxController {
         'Failed to initiate video call. Please try again.',
         snackPosition: SnackPosition.BOTTOM,
       );
+    }
+  }
+
+  /// Load existing prescription for this appointment
+  Future<void> _loadPrescription() async {
+    if (appointmentId == null) return;
+    
+    try {
+      final List<PrescriptionModel> prescriptions = 
+          await _prescriptionService.getAppointmentPrescriptions(appointmentId!);
+      
+      if (prescriptions.isNotEmpty) {
+        existingPrescription.value = prescriptions.first;
+      }
+    } catch (e) {
+      debugPrint('Error loading prescription: $e');
+    }
+  }
+
+  /// Navigate to create prescription screen
+  void navigateToCreatePrescription() {
+    final appt = appointment.value;
+    if (appt == null) return;
+
+    Get.toNamed('/create-prescription', arguments: {
+      'appointment': appt,
+      'patientId': appt.userId,
+      'patientName': appt.patientName,
+      // age could be added if available in user profile
+    })?.then((result) {
+      if (result == true) {
+        _loadPrescription();
+      }
+    });
+  }
+
+  /// Navigate to view prescription screen
+  void navigateToViewPrescription() {
+    if (existingPrescription.value?.id != null) {
+      Get.toNamed('/prescription-details', arguments: {
+        'prescriptionId': existingPrescription.value!.id,
+      });
     }
   }
 }
