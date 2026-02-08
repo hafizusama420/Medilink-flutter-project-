@@ -85,16 +85,20 @@ class ChatRoomViewModel extends GetxController {
           });
         }
       }, onError: (error) {
-        // print('ChatRoomViewModel: Error loading messages: $error');
         isLoading.value = false;
-        Get.snackbar(
-          'Error',
-          'Failed to load messages',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        // Only show error if user is still logged in to avoid snackbars during logout
+        if (_auth.currentUser != null) {
+          Get.closeAllSnackbars();
+          Get.snackbar(
+            'Error',
+            'Failed to load messages',
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 2),
+            animationDuration: const Duration(milliseconds: 300),
+          );
+        }
       });
     } catch (e) {
-      // print('ChatRoomViewModel: Error in loadMessages: $e');
       isLoading.value = false;
     }
   }
@@ -212,7 +216,7 @@ class ChatRoomViewModel extends GetxController {
       final CallService callService = CallService();
       final String receiverName = getOtherParticipantName();
       
-      print('📞 [ChatRoomViewModel] Initiating call to: $receiverName ($receiverId)');
+
       
       callService.sendCallInvitation(receiverId, receiverName);
       
@@ -220,10 +224,11 @@ class ChatRoomViewModel extends GetxController {
         'Calling',
         'Calling $receiverName...',
         snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),
+        animationDuration: const Duration(milliseconds: 300),
       );
     } catch (e) {
-      print('❌ [ChatRoomViewModel] Error initiating call: $e');
+
       Get.snackbar(
         'Error',
         'Failed to initiate call. Please try again.',
@@ -247,7 +252,7 @@ class ChatRoomViewModel extends GetxController {
       final CallService callService = CallService();
       final String receiverName = getOtherParticipantName();
       
-      print('📹 [ChatRoomViewModel] Initiating video call to: $receiverName ($receiverId)');
+
       
       callService.sendVideoCallInvitation(receiverId, receiverName);
       
@@ -255,10 +260,11 @@ class ChatRoomViewModel extends GetxController {
         'Video Calling',
         'Video calling $receiverName...',
         snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),
+        animationDuration: const Duration(milliseconds: 300),
       );
     } catch (e) {
-      print('❌ [ChatRoomViewModel] Error initiating video call: $e');
+
       Get.snackbar(
         'Error',
         'Failed to initiate video call. Please try again.',

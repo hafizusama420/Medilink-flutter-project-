@@ -3,11 +3,13 @@
 import 'package:get/get.dart';
 import '../viewmodels/assignment_list_viewmodel.dart';
 import '../viewmodels/assignment_detail_viewmodel.dart';
+import '../viewmodels/create_assignment_viewmodel.dart';
 
 class AssignmentBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<AssignmentListViewModel>(() => AssignmentListViewModel());
     Get.lazyPut<AssignmentDetailViewModel>(() => AssignmentDetailViewModel());
+    Get.lazyPut<CreateAssignmentViewModel>(() => CreateAssignmentViewModel());
   }
 }

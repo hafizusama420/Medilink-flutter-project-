@@ -33,6 +33,23 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Android-specific
+/android/local.properties
+/android/key.properties
+/android/app/src/main/res/values/strings.xml
+.gradle/
+build/
+
+# iOS-specific
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/Flutter/App.podspec
+ios/Flutter/Generated.framework
+ios/Pods/
+ServiceDefinitions.json
+
 # Symbolication related
 app.*.symbols
 
@@ -45,7 +62,7 @@ app.*.map.json
 /android/app/release
 
 
-# 🔴 SECURITY FILES (ADD THESE)
+# 🔴 SECURITY FILES
 **/*.keystore
 **/*.jks
 **/key.properties
@@ -60,3 +77,4 @@ android/build/
 ios/Pods/
 .pub-cache/
 .flutter-plugins
+lib/generated_plugin_registrant.dart

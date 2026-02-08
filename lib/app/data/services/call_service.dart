@@ -12,11 +12,7 @@ class CallService {
   /// Initialize ZegoCloud Call Kit with Signaling Plugin
   /// This should be called after a user logs in successfully.
   Future<void> onUserLogin(String userId, String userName) async {
-    print('🔵 [CallService] onUserLogin called');
-    print('🔵 [CallService] UserID: $userId');
-    print('🔵 [CallService] UserName: $userName');
-    print('🔵 [CallService] AppID: ${ZegoConfig.appID}');
-    print('🔵 [CallService] AppSign length: ${ZegoConfig.appSign.length}');
+
     
     try {
       // CRITICAL: Use await to ensure initialization completes
@@ -118,7 +114,7 @@ class CallService {
         return config;
       },
       );
-      print('✅ [CallService] ZegoCloud initialization completed successfully');
+
     
     // Signaling connection happens asynchronously - no need to wait
     // The call UI will appear as soon as the connection is ready
@@ -126,23 +122,19 @@ class CallService {
     } on UnsupportedError catch (e) {
       // This is expected on web (Platform._operatingSystem not available)
       // The initialization still succeeds, so we continue
-      print('⚠️ [CallService] Platform error (expected on web): $e');
-      print('✅ [CallService] ZegoCloud initialization completed successfully (web mode)');
+
     } catch (e, stackTrace) {
-      print('❌ [CallService] Initialization failed: $e');
-      print('❌ [CallService] StackTrace: $stackTrace');
+
     }
   }
 
   /// Send a call invitation to another user
   void sendCallInvitation(String targetUserId, String targetUserName) {
-    print('📞 [CallService] sendCallInvitation called');
-    print('📞 [CallService] Target UserID: $targetUserId');
-    print('📞 [CallService] Target UserName: $targetUserName');
+
     
     try {
       // Use ZegoUIKitPrebuiltCallInvitationService directly (correct API for 4.22.2)
-      print('📞 [CallService] Attempting to send audio call via ZegoUIKitPrebuiltCallInvitationService...');
+
       
       ZegoUIKitPrebuiltCallInvitationService().send(
         invitees: [
@@ -151,22 +143,19 @@ class CallService {
         isVideoCall: false, // Audio call
       );
       
-      print('✅ [CallService] Audio call invitation sent successfully');
+
     } catch (e, stackTrace) {
-      print('❌ [CallService] Failed to send call invitation: $e');
-      print('❌ [CallService] StackTrace: $stackTrace');
+
     }
   }
 
   /// Send a VIDEO call invitation to another user
   void sendVideoCallInvitation(String targetUserId, String targetUserName) {
-    print('📹 [CallService] sendVideoCallInvitation called');
-    print('📹 [CallService] Target UserID: $targetUserId');
-    print('📹 [CallService] Target UserName: $targetUserName');
+
     
     try {
       // Use ZegoUIKitPrebuiltCallInvitationService for video call
-      print('📹 [CallService] Attempting to send video call via ZegoUIKitPrebuiltCallInvitationService...');
+
       
       ZegoUIKitPrebuiltCallInvitationService().send(
         invitees: [
@@ -175,22 +164,21 @@ class CallService {
         isVideoCall: true, // Video call
       );
       
-      print('✅ [CallService] Video call invitation sent successfully');
+
     } catch (e, stackTrace) {
-      print('❌ [CallService] Failed to send video call invitation: $e');
-      print('❌ [CallService] StackTrace: $stackTrace');
+
     }
   }
 
   /// Uninitialize ZegoCloud Call Kit
   /// This should be called when the user logs out.
   void onUserLogout() {
-    print('🔴 [CallService] onUserLogout called');
+
     try {
       ZegoUIKitPrebuiltCallInvitationService().uninit();
-      print('✅ [CallService] ZegoCloud uninitialized successfully');
+
     } catch (e) {
-      print('❌ [CallService] Logout failed: $e');
+
     }
   }
 }

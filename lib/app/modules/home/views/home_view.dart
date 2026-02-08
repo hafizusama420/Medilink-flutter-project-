@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/custom_drawer.dart';
 import '../../../models/appointment_model.dart';
+import '../../health_tracker/views/health_tracker_view.dart';
 import '../viewmodels/home_viewmodel.dart';
+import '../../../routes/app_routes.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Import sub-views for persistent navigation
@@ -26,19 +28,30 @@ class HomeView extends GetView<HomeViewModel> {
             return const Center(child: CircularProgressIndicator());
           }
 
+          final int index = controller.selectedTabIndex.value;
+          
           if (controller.isDoctor) {
             return IndexedStack(
-              index: controller.selectedTabIndex.value,
+              index: index,
               children: [
                 _buildDoctorHome(context),
-                const ChatListView(),
-                const AppointmentsListView(),
-                ProfileView(),
+                const ChatListView(), // Messages
+                const AppointmentsListView(), // Schedule
+                ProfileView(), // Profile
               ],
             );
           }
 
-          return _buildPatientHome(context);
+          // Patient navigation
+          return IndexedStack(
+            index: index,
+            children: [
+              _buildPatientHome(context), // For You (Tab 0)
+              const SizedBox(), // Messages (Tab 1) - if needed
+              const HealthTrackerView(), // Health (Tab 2)
+              ProfileView(), // Profile (Tab 3) - if needed
+            ],
+          );
         }),
       ),
       bottomNavigationBar: _buildBottomNavBar(),
@@ -48,6 +61,7 @@ class HomeView extends GetView<HomeViewModel> {
   /// Patient Dashboard (Existing Redesign)
   Widget _buildPatientHome(BuildContext context) {
     return SingleChildScrollView(
+      controller: controller.scrollController,
       physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +80,7 @@ class HomeView extends GetView<HomeViewModel> {
   /// Doctor Dashboard (New Requirements)
   Widget _buildDoctorHome(BuildContext context) {
     return SingleChildScrollView(
+      controller: controller.scrollController,
       physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +156,7 @@ class HomeView extends GetView<HomeViewModel> {
           child: _buildSectionHeader(
             context,
             title: 'Doctors',
-            onViewAll: () => Get.toNamed('/doctors'),
+            onViewAll: () => Get.toNamed('/doctors')?.then((_) => controller.scrollToTop()),
           ),
         ),
         const SizedBox(height: 16),
@@ -262,7 +277,7 @@ class HomeView extends GetView<HomeViewModel> {
                         'uid': doctor.uid,
                         'fullName': doctor.fullName,
                         'specialty': doctor.specialty,
-                      }),
+                      })?.then((_) => controller.scrollToTop()),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
@@ -291,9 +306,9 @@ class HomeView extends GetView<HomeViewModel> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          _buildActionTile(context, icon: Icons.description_outlined, label: 'E-prescription', onTap: () => Get.toNamed('/prescriptions')),
+          _buildActionTile(context, icon: Icons.description_outlined, label: 'E-prescription', onTap: () => Get.toNamed('/prescriptions')?.then((_) => controller.scrollToTop())),
           const SizedBox(height: 12),
-          _buildActionTile(context, icon: Icons.how_to_reg_outlined, label: 'Assignments', onTap: () => Get.toNamed('/assignments')),
+          _buildActionTile(context, icon: Icons.how_to_reg_outlined, label: 'Assignments', onTap: () => Get.toNamed('/assignments')?.then((_) => controller.scrollToTop())),
         ],
       ),
     );
@@ -873,7 +888,7 @@ class HomeView extends GetView<HomeViewModel> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textDark),
           ),
           const SizedBox(height: 16),
-          // 2x2 Grid Layout
+          // 2x2+1 Grid Layout (Rearranged for 5 items)
           Column(
             children: [
               // First Row
@@ -888,9 +903,18 @@ class HomeView extends GetView<HomeViewModel> {
               // Second Row
               Row(
                 children: [
-                  _buildDoctorActionTile(Icons.add_task_rounded, "Add Slot", () => controller.showAddSlotDialog()),
+                  _buildDoctorActionTile(Icons.assignment_outlined, "Assignments", () => Get.toNamed('/assignments')),
                   const SizedBox(width: 12),
+                  _buildDoctorActionTile(Icons.add_task_rounded, "Add Slot", () => controller.showAddSlotDialog()),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // Third Row
+              Row(
+                children: [
                   _buildDoctorActionTile(Icons.block, "Block Slot", () => controller.showBlockSlotDialog()),
+                  const SizedBox(width: 12),
+                  _buildDoctorActionTile(Icons.favorite_outline, "Health Tracker", () => Get.toNamed(AppRoutes.healthTracker)?.then((_) => controller.scrollToTop())),
                 ],
               ),
             ],

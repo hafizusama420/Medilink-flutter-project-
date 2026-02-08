@@ -293,10 +293,10 @@ class CreateAppointmentViewModel extends GetxController {
             appointment.id!,
             {'fcmToken': fcmToken, 'notificationScheduled': false},
           );
-          print('✅ FCM token saved with appointment for Cloud Functions');
+
         }
       } catch (e) {
-        print('⚠️ Error saving FCM token: $e');
+
       }
 
       // Navigate back to the home screen

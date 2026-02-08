@@ -224,9 +224,9 @@ class EditAppointmentViewModel extends GetxController {
         try {
           final oldNotificationId = originalAppointment!.appointmentDate!.millisecondsSinceEpoch ~/ 1000;
           await NotificationService().cancelNotification(oldNotificationId);
-          print('✅ Cancelled old notification - ID: $oldNotificationId');
+
         } catch (e) {
-          print('⚠️ Error cancelling old notification: $e');
+
         }
       }
 
@@ -239,7 +239,7 @@ class EditAppointmentViewModel extends GetxController {
       } else if (appointmentDateTime.isAfter(DateTime.now())) {
         // If appointment is in less than an hour, schedule reminder for 2 minutes from now
         reminderTime = DateTime.now().add(const Duration(minutes: 2));
-        print('🕒 Updated appointment is soon, scheduling reminder for 2 minutes from now: $reminderTime');
+
       }
 
       if (reminderTime != null) {
@@ -254,10 +254,10 @@ class EditAppointmentViewModel extends GetxController {
           );
           
           if (success) {
-            print('✅ New notification scheduled for: $reminderTime');
+
           }
         } catch (e) {
-          print('⚠️ Error scheduling new notification: $e');
+
         }
       }
 

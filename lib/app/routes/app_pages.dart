@@ -30,7 +30,10 @@ import '../modules/prescription/views/prescription_detail_view.dart';
 import '../modules/prescription/bindings/prescription_binding.dart';
 import '../modules/assignments/views/assignment_list_view.dart';
 import '../modules/assignments/views/assignment_detail_view.dart';
+import '../modules/assignments/views/create_assignment_view.dart';
 import '../modules/assignments/bindings/assignment_binding.dart';
+import '../modules/health_tracker/views/health_tracker_view.dart';
+import '../modules/health_tracker/bindings/health_tracker_binding.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -132,6 +135,16 @@ class AppPages {
       name: AppRoutes.assignmentDetail,
       page: () => const AssignmentDetailView(),
       binding: AssignmentBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.createAssignment,
+      page: () => const CreateAssignmentView(),
+      binding: AssignmentBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.healthTracker,
+      page: () => const HealthTrackerView(),
+      binding: HealthTrackerBinding(),
     ),
   ];
 }

@@ -41,7 +41,7 @@ class ReviewsListViewModel extends GetxController {
         reviews.value = reviewsList;
         isLoading.value = false;
       }, onError: (error) {
-        print('ReviewsListViewModel: Error loading reviews: $error');
+
         isLoading.value = false;
         Get.snackbar(
           'Error',
@@ -50,7 +50,7 @@ class ReviewsListViewModel extends GetxController {
         );
       });
     } catch (e) {
-      print('ReviewsListViewModel: Error in loadReviews: $e');
+
       isLoading.value = false;
     }
   }
@@ -63,7 +63,7 @@ class ReviewsListViewModel extends GetxController {
       totalReviews.value = stats['totalReviews'];
       ratingDistribution.value = Map<int, int>.from(stats['ratingDistribution']);
     } catch (e) {
-      print('ReviewsListViewModel: Error loading stats: $e');
+
     }
   }
 

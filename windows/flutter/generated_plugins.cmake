@@ -12,6 +12,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_timezone
   flutter_volume_controller
   permission_handler_windows
+  printing
   screen_brightness_windows
   share_plus
   url_launcher_windows

@@ -126,22 +126,24 @@ class LoginViewModel extends GetxController {
         }
         
         // User is verified (or verification skipped), proceed to home
+        Get.closeAllSnackbars();
         Get.snackbar(
           'Success',
           'Login successful! Welcome back.',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
           colorText: Colors.white,
-          duration: const Duration(seconds: 2),
+          duration: const Duration(seconds: 1),
+          animationDuration: const Duration(milliseconds: 300),
         );
         
         // Initialize ZegoCloud Call Service
-        print('🟢 [LoginViewModel] Initializing ZegoCloud for user: ${refreshedUser!.uid}');
+
         await CallService().onUserLogin(
-          refreshedUser.uid,
+          refreshedUser!.uid,
           refreshedUser.displayName ?? refreshedUser.email?.split('@')[0] ?? 'User',
         );
-        print('🟢 [LoginViewModel] ZegoCloud initialization call completed');
+
 
         // Navigate to home screen and clear navigation stack
         Get.offAllNamed('/home');

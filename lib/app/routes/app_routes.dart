@@ -36,7 +36,15 @@ class AppRoutes {
   static const prescriptionDetails = '/prescription-details';
   
   // Assignment routes
+  static const assignments = _Paths.assignments;
+  static const assignmentDetail = _Paths.assignmentDetail;
+  static const createAssignment = _Paths.createAssignment;
+  static const healthTracker = _Paths.healthTracker;
+}
+
+abstract class _Paths {
   static const assignments = '/assignments';
   static const assignmentDetail = '/assignment-detail';
   static const createAssignment = '/create-assignment';
+  static const healthTracker = '/health-tracker';
 }

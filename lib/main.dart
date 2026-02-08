@@ -31,7 +31,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   }
   
-  print("📨 Background message received: ${message.messageId}");
+
   
   // CRITICAL: Ignore ZegoCloud signaling messages!
   // These are handled natively by the ZegoUIKitPrebuiltCallInvitationService plugin.
@@ -40,12 +40,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (data.containsKey('call_id') || 
       data.containsKey('zegocloud') || 
       (data['body'] != null && data['body'].toString().contains('zegocloud'))) {
-    print("🚀 [FCM] Ignoring ZegoCloud signaling message - letting Zego handle it.");
+
     return;
   }
   
-  print("   Title: ${message.notification?.title ?? message.data['title']}");
-  print("   Body: ${message.notification?.body ?? message.data['body']}");
+
   
   // CRITICAL: Must show local notification in background handler
   // FCM only delivers the message; we must display it ourselves
@@ -103,10 +102,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       payload: payload,
     );
     
-    print("✅ Background notification displayed successfully");
+
   } catch (e, stack) {
-    print("❌ Error showing background notification: $e");
-    print(stack);
+
   }
 }
 
@@ -122,65 +120,65 @@ void main() async {
     // Initialize local storage with error handling
     try {
       await GetStorage.init();
-      print('✅ GetStorage initialized');
+
     } catch (e) {
-      print('❌ GetStorage error: $e');
+
     }
 
     // ========== STEP 1: Initialize Firebase ==========
-    print('🚀 Initializing Firebase...');
+
     try {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-      print('✅ Firebase initialized');
+
     } catch (e) {
-      print('⚠️ Firebase error: $e');
+
     }
     
     // ========== STEP 2: Initialize Timezone ==========
-    print('🌍 Initializing timezone...');
+
     try {
       tz.initializeTimeZones();
       final String timeZoneName = await FlutterTimezone.getLocalTimezone();
       tz.setLocalLocation(tz.getLocation(timeZoneName));
-      print('✅ Timezone set to: $timeZoneName');
+
     } catch (e) {
-      print('⚠️ Timezone error, using UTC: $e');
+
       try {
         tz.initializeTimeZones();
         tz.setLocalLocation(tz.UTC);
       } catch (_) {}
     }
   } catch (e) {
-    print('❌ Fatal initialization error: $e');
+
     // Continue anyway to allow app to start
   }
   
   // ========== STEP 3: Register Background Handler ==========
   try {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    print('✅ Background handler registered');
+
   } catch (e) {
-    print('⚠️ Background handler error: $e');
+
   }
   
   // ========== STEP 4: Initialize Notification Service ==========
-  print('🔔 Initializing Notification Service...');
+
   try {
     await NotificationService().init().timeout(
       const Duration(seconds: 15),
-      onTimeout: () => print('⚠️ NotificationService timeout'),
+      onTimeout: () {},
     );
-    print('✅ Notification Service initialized');
+
   } catch (e) {
-    print('❌ NotificationService error: $e');
+
   }
   
   // ========== STEP 5: Set NavigatorKey for ZegoCloud ==========
-  print('🔵 Setting ZegoCloud NavigatorKey...');
+
   ZegoUIKitPrebuiltCallInvitationService().setNavigatorKey(navigatorKey);
-  print('✅ ZegoCloud NavigatorKey configured');
+
 
   // ========== STEP 6: Initialize ZegoCloud for Auto-logged-in Users ==========
   try {
@@ -194,16 +192,16 @@ void main() async {
         userName = 'User_${user.uid.substring(0, 8)}';
       }
       
-      print('🔵 [main] Auto-login detected, initializing ZegoCloud...');
+
       // Start initialization immediately but don't block app launch
       CallService().onUserLogin(user.uid, userName).then((_) {
-        print('✅ [main] ZegoCloud initialization completed');
+
       }).catchError((e) {
-        print('❌ [main] ZegoCloud initialization error: $e');
+
       });
     }
   } catch (e) {
-    print('⚠️ ZegoCloud auto-init error: $e');
+
   }
 
   // Run the app

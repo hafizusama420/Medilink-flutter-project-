@@ -63,7 +63,7 @@ class AppointmentsListViewModel extends GetxController {
     
     if (updated) {
       // The stream listener will handle the UI refresh when Firestore notifies us
-      print('🕒 Auto-completed stale appointments');
+
     }
 
     // Always refresh the observable list to trigger UI update for effectiveStatus

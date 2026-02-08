@@ -18,11 +18,11 @@ class NotificationService {
 
   /// Initialize notification service
   Future<void> init() async {
-    print('🔔 ========== NOTIFICATION SERVICE INIT START ==========');
+
     
     // ========== STEP 1: Request Notification Permissions ==========
     if (GetPlatform.isAndroid) {
-      print('📱 STEP 1: Requesting Android notification permission...');
+
       
       try {
         const AndroidInitializationSettings androidSettings =
@@ -38,17 +38,17 @@ class NotificationService {
             ?.requestNotificationsPermission();
         
         if (granted == true) {
-          print('✅ Notification permission granted');
+
         } else {
-          print('⚠️ Notification permission denied or not available');
+
         }
       } catch (e) {
-        print('❌ Error requesting Android permission: $e');
+
       }
     }
 
     // ========== STEP 2: Request FCM Permissions ==========
-    print('📱 STEP 2: Requesting FCM permissions...');
+
     try {
       NotificationSettings settings = await _fcm.requestPermission(
         alert: true,
@@ -56,13 +56,13 @@ class NotificationService {
         sound: true,
         provisional: false,
       );
-      print('✅ FCM permission status: ${settings.authorizationStatus}');
+
     } catch (e) {
-      print('❌ FCM permission error: $e');
+
     }
 
     // ========== STEP 3: Initialize Local Notifications with Callbacks ==========
-    print('🔔 STEP 3: Initializing local notifications with tap handler...');
+
     
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -78,10 +78,10 @@ class NotificationService {
       initSettings,
       onDidReceiveNotificationResponse: _handleNotificationTap,
     );
-    print('✅ Notification tap handler configured');
+
 
     // ========== STEP 4: Create Android Notification Channels ==========
-    print('🔔 STEP 4: Creating notification channels...');
+
     try {
       const AndroidNotificationChannel generalChannel = AndroidNotificationChannel(
         'medilink_channel',
@@ -112,29 +112,29 @@ class NotificationService {
               AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(appointmentChannel);
 
-      print('✅ Notification channels created');
+
     } catch (e) {
-      print('❌ Error creating channels: $e');
+
     }
 
     // ========== STEP 5: Setup Foreground Message Handler ==========
-    print('🔔 STEP 5: Setting up foreground message handler...');
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('📨 Foreground message received: ${message.notification?.title}');
+
       _showFCMNotification(message);
     });
 
     // ========== STEP 6: Get FCM Token ==========
-    print('🔔 STEP 6: Getting FCM token...');
+
     try {
       String? token = await _fcm.getToken();
-      print("🔑 FCM Token: $token");
+
     } catch (e) {
-      print('❌ FCM token error: $e');
+
     }
 
     // ========== STEP 7: Send Test Notification ==========
-    print('🔔 STEP 7: Sending startup test notification...');
+
     try {
       await _localNotifications.show(
         99999,
@@ -150,28 +150,28 @@ class NotificationService {
           ),
         ),
       );
-      print('✅ Test notification sent');
+
     } catch (e) {
-      print('❌ Test notification error: $e');
+
     }
 
-    print('🎉 ========== NOTIFICATION SERVICE INIT COMPLETE ==========');
+
   }
 
   /// Get current FCM token for saving with appointments
   Future<String?> getFCMToken() async {
     try {
       final token = await _fcm.getToken();
-      print('🔑 Retrieved FCM token: ${token?.substring(0, 20)}...');
+
       return token;
     } catch (e) {
-      print('❌ Error getting FCM token: $e');
+
       return null;
     }
   }
 
   void _handleNotificationTap(NotificationResponse response) {
-    print('📱 Notification tapped: ${response.payload}');
+
     
     try {
       if (response.payload != null && response.payload!.isNotEmpty) {
@@ -182,7 +182,7 @@ class NotificationService {
         Get.toNamed('/appointments');
       }
     } catch (e) {
-      print('❌ Error handling notification tap: $e');
+
     }
   }
 
@@ -212,15 +212,15 @@ class NotificationService {
         payload: payload,
       );
       
-      print('✅ Foreground notification displayed');
+
     } catch (e) {
-      print('❌ Error showing foreground notification: $e');
+
     }
   }
 
   Future<void> sendTestNotification() async {
     try {
-      print('🧪 Sending test notification...');
+
       await _localNotifications.show(
         99998,
         '🧪 Test Notification',
@@ -235,10 +235,9 @@ class NotificationService {
           ),
         ),
       );
-      print('✅ Test notification sent successfully');
+
     } catch (e, stack) {
-      print('❌ Test notification error: $e');
-      print(stack);
+
       rethrow;
     }
   }
@@ -253,7 +252,7 @@ class NotificationService {
     String? appointmentId,
   }) async {
     try {
-      print('📅 Showing immediate appointment notification');
+
       
       // Show notification immediately when appointment is created
       await _localNotifications.show(
@@ -275,12 +274,11 @@ class NotificationService {
         payload: appointmentId,
       );
       
-      print('✅ Appointment notification shown - ID: $id');
+
       return true;
       
     } catch (e, stack) {
-      print('❌ Error showing appointment notification: $e');
-      print(stack);
+
       return false;
     }
   }
@@ -291,16 +289,16 @@ class NotificationService {
 
   /// Cancel notification (no-op for immediate notifications)
   Future<void> cancelNotification(int id) async {
-    print('ℹ️ Notification cancellation not needed for immediate notifications');
+
   }
 
   /// Cancel all notifications
   Future<void> cancelAllNotifications() async {
     try {
       await _localNotifications.cancelAll();
-      print('✅ All notifications cancelled');
+
     } catch (e) {
-      print('❌ Error cancelling all notifications: $e');
+
     }
   }
 }

@@ -16,6 +16,8 @@ class HomeViewModel extends GetxController {
   final DoctorService _doctorService = DoctorService();
   final AppointmentService _appointmentService = AppointmentService();
   
+  // Scroll Controller for reset logic
+  final ScrollController scrollController = ScrollController();
   var currentUser = Rx<UserModel?>(null);
   var topDoctors = <UserModel>[].obs;
   
@@ -83,7 +85,7 @@ class HomeViewModel extends GetxController {
     final now = DateTime.now();
     for (var appt in todayAppointments) {
       if (appt.isStaleForAutoCompletion(now)) {
-        print('🕒 Auto-completing stale appointment in DB: ${appt.id}');
+
         updateAppointmentStatus(appt.id!, 'Completed', silent: true);
       }
     }
@@ -141,13 +143,7 @@ class HomeViewModel extends GetxController {
     });
   }
 
-  @override
-  void onClose() {
-    _userSubscription?.cancel();
-    _appointmentsSubscription?.cancel();
-    _statusTimer?.cancel();
-    super.onClose();
-  }
+
 
   void _subscribeToUser() {
     final user = FirebaseAuth.instance.currentUser;
@@ -177,7 +173,7 @@ class HomeViewModel extends GetxController {
       isDoctorsLoading.value = false;
     } catch (e) {
       isDoctorsLoading.value = false;
-      print('HomeViewModel: Error fetching doctors: $e');
+
     }
   }
 
@@ -195,7 +191,7 @@ class HomeViewModel extends GetxController {
       isOnline.value = status;
       await _userService.updateUserProfile(currentUser.value!.uid!, {'isOnline': status});
     } catch (e) {
-      print('HomeViewModel: Error toggling status: $e');
+
     }
   }
 
@@ -215,13 +211,13 @@ class HomeViewModel extends GetxController {
       if (!silent) {
         Get.snackbar('Error', 'Failed to update status: $e');
       } else {
-        print('❌ Error in silent status update: $e');
+
       }
     }
   }
 
   void navigateToCalendar() {
-    Get.toNamed(AppRoutes.appointments);
+    Get.toNamed(AppRoutes.appointments)?.then((_) => scrollToTop());
   }
 
   void confirmCancelAppointment(String id) {
@@ -358,13 +354,13 @@ class HomeViewModel extends GetxController {
         colorText: Colors.white,
       );
     } catch (e) {
-      print("Error finalizing cancellation: $e");
+
     }
   }
 
   void _notifyPatientCancellation(AppointmentModel appt, String reason) {
     // In a real app, this would trigger a Cloud Function or send via FCM service
-    print("🔔 NOTIFYING PATIENT ${appt.userId}: Your appointment with Dr. $displayName at ${_formatTime(appt.appointmentDate)} has been cancelled. Reason: $reason");
+
     
     // If we had a direct FCM send capability in the frontend (usually restricted):
     // if (appt.fcmToken != null) {
@@ -381,7 +377,7 @@ class HomeViewModel extends GetxController {
       'uid': appt.doctorUid,
       'fullName': appt.doctorName,
       'specialty': appt.doctorSpecialty,
-    });
+    })?.then((_) => scrollToTop());
   }
 
   Future<void> showAddSlotDialog() async {
@@ -477,7 +473,14 @@ class HomeViewModel extends GetxController {
   }
 
   void changeTab(int index) {
+    if (selectedTabIndex.value == index && index == 0) {
+      scrollToTop();
+    }
     selectedTabIndex.value = index;
+    if (index == 0) {
+      // Ensure we are at top when switching back to home tab
+      scrollToTop();
+    }
   }
 
   String get userRole => currentUser.value?.role ?? 'Patient';
@@ -491,5 +494,20 @@ class HomeViewModel extends GetxController {
     final ampm = date.hour >= 12 ? "PM" : "AM";
     final minute = date.minute.toString().padLeft(2, '0');
     return "${hour.toString().padLeft(2, '0')}:$minute $ampm";
+  }
+  @override
+  void onClose() {
+    scrollController.dispose();
+    _userSubscription?.cancel();
+    _appointmentsSubscription?.cancel();
+    _statusTimer?.cancel();
+    _undoTimer?.cancel();
+    super.onClose();
+  }
+
+  void scrollToTop() {
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(0.0);
+    }
   }
 }

@@ -9,6 +9,9 @@ import '../../../data/services/auth_service.dart';
 import '../../../data/services/user_service.dart';
 import '../../../models/user_model.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../services/prescription_pdf_service.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart';
 
 class PrescriptionDetailViewModel extends GetxController {
   final PrescriptionService _prescriptionService = PrescriptionService();
@@ -54,7 +57,7 @@ class PrescriptionDetailViewModel extends GetxController {
         final profile = await _userService.getUserProfile(uid);
         currentUserProfile.value = profile;
       } catch (e) {
-        print('Error loading user profile: $e');
+
       }
     }
   }
@@ -211,22 +214,102 @@ class PrescriptionDetailViewModel extends GetxController {
 
   /// Download prescription as PDF
   Future<void> downloadPDF() async {
-    // TODO: Implement PDF generation
-    Get.snackbar(
-      'Coming Soon',
-      'PDF download feature will be available soon',
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    if (prescription.value == null) {
+      Get.snackbar(
+        'Error',
+        'Prescription data not loaded',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      
+      Get.snackbar(
+        'Generating PDF',
+        'Please wait...',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppTheme.primaryBlue,
+        colorText: Colors.white,
+        showProgressIndicator: true,
+      );
+      
+      final pdfService = PrescriptionPdfService();
+      final pdfBytes = await pdfService.generatePrescriptionPDFBytes(prescription.value!);
+      
+      Get.closeAllSnackbars();
+      
+      // Use Printing.layoutPdf to trigger a print/save dialog (works on Web & Mobile)
+      await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdfBytes,
+        name: 'Prescription_${prescription.value!.patientName ?? 'Patient'}',
+      );
+      
+    } catch (e) {
+      Get.closeAllSnackbars();
+      Get.snackbar(
+        'Error',
+        'Failed to generate PDF: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   /// Share prescription
   Future<void> sharePrescription() async {
-    // TODO: Implement share functionality
-    Get.snackbar(
-      'Coming Soon',
-      'Share feature will be available soon',
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    if (prescription.value == null) {
+      Get.snackbar(
+        'Error',
+        'Prescription data not loaded',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      
+      Get.snackbar(
+        'Preparing to Share',
+        'Generating PDF...',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppTheme.primaryBlue,
+        colorText: Colors.white,
+        showProgressIndicator: true,
+      );
+      
+      final pdfService = PrescriptionPdfService();
+      final pdfBytes = await pdfService.generatePrescriptionPDFBytes(prescription.value!);
+      
+      Get.closeAllSnackbars();
+      
+      // Share functionality using Printing.sharePdf which is cross-platform
+      await Printing.sharePdf(
+        bytes: pdfBytes,
+        filename: 'Prescription_${prescription.value!.patientName ?? 'Patient'}.pdf',
+      );
+      
+    } catch (e) {
+      Get.closeAllSnackbars();
+      Get.snackbar(
+        'Error',
+        'Failed to share prescription: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   /// Set medication reminder

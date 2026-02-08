@@ -1,15 +1,14 @@
 // lib/app/modules/assignments/viewmodels/assignment_detail_viewmodel.dart
 
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../models/assignment_model.dart';
 import '../../../services/assignment_service.dart';
-import '../../../data/services/auth_service.dart';
 import '../../../data/services/user_service.dart';
 import '../../../models/user_model.dart';
 
 class AssignmentDetailViewModel extends GetxController {
   final AssignmentService _assignmentService = AssignmentService();
-  final AuthService _authService = Get.find<AuthService>();
   final UserService _userService = UserService();
 
   // Observable variables
@@ -21,7 +20,7 @@ class AssignmentDetailViewModel extends GetxController {
 
   // Check if user is doctor
   bool get isDoctor => currentUser.value?.role == 'Doctor';
-  String? get userId => _authService.currentUser?.uid;
+  String? get userId => FirebaseAuth.instance.currentUser?.uid;
 
   @override
   void onInit() {

@@ -59,6 +59,37 @@ service cloud.firestore {
         resource.data.doctorId == request.auth.uid;
     }
     
+    // Assignments collection rules
+    match /assignments/{assignmentId} {
+      // Allow read if user is either the patient or the doctor
+      allow read: if request.auth != null && 
+        (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid);
+      
+      // Allow create if user is a doctor and sets themselves as doctorId
+      allow create: if request.auth != null && 
+        request.resource.data.doctorId == request.auth.uid;
+      
+      // Allow update by the assigned doctor OR by the patient (for marking complete and adding notes)
+      allow update: if request.auth != null && 
+        (resource.data.doctorId == request.auth.uid || resource.data.patientId == request.auth.uid);
+      
+      // Allow delete only by the assigned doctor
+      allow delete: if request.auth != null && 
+        resource.data.doctorId == request.auth.uid;
+    }
+    
+    // Health records rules
+    match /health_records/{recordId} {
+      // Allow read if user is the patient or the doctor who recorded it
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || resource.data.recordedBy == request.auth.uid);
+      
+      // Allow creation if user is the patient (setting themselves as userId) 
+      // or a doctor (setting themselves as recordedBy)
+      allow create: if request.auth != null && 
+        (request.resource.data.userId == request.auth.uid || request.resource.data.recordedBy == request.auth.uid);
+    }
+    
     // Default deny all other access
     match /{document=**} {
       allow read, write: if false;

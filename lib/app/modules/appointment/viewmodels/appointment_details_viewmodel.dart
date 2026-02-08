@@ -7,6 +7,7 @@ import '../../../data/services/user_service.dart';
 import '../../../data/services/review_service.dart';
 import '../../../data/services/notification_service.dart';
 import '../../../data/services/call_service.dart';
+import '../../../routes/app_routes.dart';
 import '../../../services/prescription_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../models/appointment_model.dart';
@@ -157,9 +158,9 @@ class AppointmentDetailsViewModel extends GetxController {
         try {
           final notificationId = appointment.value!.appointmentDate!.millisecondsSinceEpoch ~/ 1000;
           await NotificationService().cancelNotification(notificationId);
-          print('✅ Cancelled notification for deleted appointment - ID: $notificationId');
+
         } catch (e) {
-          print('⚠️ Error cancelling notification: $e');
+
         }
       }
 
@@ -262,7 +263,7 @@ class AppointmentDetailsViewModel extends GetxController {
       final CallService callService = CallService();
       final String patientName = appt.patientName ?? 'Patient';
       
-      print('📞 [AppointmentDetailsViewModel] Doctor initiating call to: $patientName (${appt.userId})');
+
       
       callService.sendCallInvitation(appt.userId!, patientName);
       
@@ -273,7 +274,7 @@ class AppointmentDetailsViewModel extends GetxController {
         duration: const Duration(seconds: 2),
       );
     } catch (e) {
-      print('❌ [AppointmentDetailsViewModel] Error initiating call: $e');
+
       Get.snackbar(
         'Error',
         'Failed to initiate call. Please try again.',
@@ -307,7 +308,7 @@ class AppointmentDetailsViewModel extends GetxController {
       final CallService callService = CallService();
       final String patientName = appt.patientName ?? 'Patient';
       
-      print('📹 [AppointmentDetailsViewModel] Doctor initiating video call to: $patientName (${appt.userId})');
+
       
       callService.sendVideoCallInvitation(appt.userId!, patientName);
       
@@ -318,7 +319,7 @@ class AppointmentDetailsViewModel extends GetxController {
         duration: const Duration(seconds: 2),
       );
     } catch (e) {
-      print('❌ [AppointmentDetailsViewModel] Error initiating video call: $e');
+
       Get.snackbar(
         'Error',
         'Failed to initiate video call. Please try again.',
@@ -367,5 +368,27 @@ class AppointmentDetailsViewModel extends GetxController {
         'prescriptionId': existingPrescription.value!.id,
       });
     }
+  }
+
+  /// Navigate to create assignment screen
+  void navigateToCreateAssignment() {
+    final appt = appointment.value;
+    if (appt == null) return;
+
+    Get.toNamed('/create-assignment', arguments: {
+      'appointmentId': appointmentId,
+      'patientId': appt.userId,
+      'patientName': appt.patientName,
+    });
+  }
+
+  void navigateToRecordVitals() {
+    final appt = appointment.value;
+    if (appt == null) return;
+
+    Get.toNamed(AppRoutes.healthTracker, arguments: {
+      'patientId': appt.userId,
+      'patientName': appt.patientName,
+    });
   }
 }

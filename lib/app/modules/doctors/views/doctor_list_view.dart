@@ -394,9 +394,7 @@ class DoctorListView extends StatelessWidget {
                   ),
                   child: IconButton(
                     onPressed: () {
-                      print('🎯 [DoctorListView] Call button clicked');
-                      print('🎯 [DoctorListView] Doctor UID: ${doctor.uid}');
-                      print('🎯 [DoctorListView] Doctor Name: ${doctor.fullName}');
+
                       
                       // Trigger the call
                       CallService().sendCallInvitation(

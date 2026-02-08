@@ -10,7 +10,7 @@ class CreateAppointmentView extends GetView<CreateAppointmentViewModel> {
 
   @override
   Widget build(BuildContext context) {
-    print('CreateAppointmentView: Building view...');
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(

@@ -145,7 +145,7 @@ class AddReviewViewModel extends GetxController {
         Get.back(result: true); // Close the Review Page
       });
     } catch (e) {
-      print('AddReviewViewModel: Error submitting review: $e');
+
       Get.snackbar(
         'Error',
         'Failed to submit review. Please try again.',

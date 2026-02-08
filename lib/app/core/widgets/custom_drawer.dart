@@ -197,6 +197,7 @@ class CustomDrawer extends StatelessWidget {
           const Divider(),
           TextButton.icon(
             onPressed: () async {
+              Get.closeAllSnackbars();
               await FirebaseAuth.instance.signOut();
               Get.offAllNamed('/login');
               Get.snackbar(
@@ -204,7 +205,9 @@ class CustomDrawer extends StatelessWidget {
                 'You have been logged out successfully', 
                 snackPosition: SnackPosition.BOTTOM, 
                 backgroundColor: AppTheme.successGreen, 
-                colorText: Colors.white
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                animationDuration: const Duration(milliseconds: 300),
               );
             },
             icon: const Icon(Icons.logout_rounded, color: AppTheme.errorRed),

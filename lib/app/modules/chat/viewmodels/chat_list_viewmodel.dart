@@ -55,16 +55,20 @@ class ChatListViewModel extends GetxController {
         isLoading.value = false;
         // print('ChatListViewModel: Loaded ${rooms.length} chat rooms');
       }, onError: (error) {
-        // print('ChatListViewModel: Error loading chat rooms: $error');
         isLoading.value = false;
-        Get.snackbar(
-          'Error',
-          'Failed to load chats',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        // Only show error if user is still logged in
+        if (_auth.currentUser != null) {
+          Get.closeAllSnackbars();
+          Get.snackbar(
+            'Error',
+            'Failed to load chats',
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 2),
+            animationDuration: const Duration(milliseconds: 300),
+          );
+        }
       });
     } catch (e) {
-      // print('ChatListViewModel: Error in loadChatRooms: $e');
       isLoading.value = false;
     }
   }

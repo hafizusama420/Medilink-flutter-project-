@@ -16,9 +16,9 @@ class ReviewService {
       // Update doctor's rating
       await _updateDoctorRating(review.doctorId!);
 
-      print('ReviewService: Review added successfully');
+
     } catch (e) {
-      print('ReviewService: Error adding review: $e');
+
       throw Exception('Failed to add review: $e');
     }
   }
@@ -50,7 +50,7 @@ class ReviewService {
 
       return snapshot.docs.isNotEmpty;
     } catch (e) {
-      print('ReviewService: Error checking review status: $e');
+
       return false;
     }
   }
@@ -88,10 +88,9 @@ class ReviewService {
         'totalReviews': totalReviews,
       });
 
-      print(
-          'ReviewService: Updated doctor rating - Average: $averageRating, Total: $totalReviews');
+
     } catch (e) {
-      print('ReviewService: Error updating doctor rating: $e');
+
       throw Exception('Failed to update doctor rating: $e');
     }
   }
@@ -129,7 +128,7 @@ class ReviewService {
         'ratingDistribution': distribution,
       };
     } catch (e) {
-      print('ReviewService: Error getting review stats: $e');
+
       return {
         'averageRating': 0.0,
         'totalReviews': 0,
@@ -143,9 +142,9 @@ class ReviewService {
     try {
       await _firestore.collection(_reviewsCollection).doc(reviewId).delete();
       await _updateDoctorRating(doctorId);
-      print('ReviewService: Review deleted successfully');
+
     } catch (e) {
-      print('ReviewService: Error deleting review: $e');
+
       throw Exception('Failed to delete review: $e');
     }
   }
